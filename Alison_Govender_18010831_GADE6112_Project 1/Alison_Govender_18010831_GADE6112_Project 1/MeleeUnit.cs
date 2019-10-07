@@ -10,54 +10,125 @@ namespace Alison_Govender_18010831_GADE6112_Project_1
     public abstract class MeleeUnit : Unit
     {
 
-        public MeleeUnit(int X, int Y, int hp, int Us, int Attack, int AR, string Fact, string Sym, bool UnitAtck)
+        public Melee_Unit(int x, int y, string faction) : base(x, y, 100, 1, 10, 3, faction, 'M') { }
+
+        public override int X
         {
-            X = x;
-            Y = y;
-            Health = 100;
-            UnitSpeed = 2;
-            attack = 25;
-            AttackRange = 1;
-            Faction = "Melee";
-            Symbol = "M";
-           
+            get { return x; }
+            set { x = value; }
         }
 
-        public MeleeUnit() : base()
+        public override int Y
         {
-
+            get { return y; }
+            set { y = value; }
         }
 
-        public override void Move()
+        public override int Health
         {
-            
+            get { return health; }
+            set { health = value; }
         }
 
-        public override void Attack_Range()
+        public override int MaxHealth
         {
-            
+            get { return health; }
         }
 
-
-        public override void Combact()
+        public override string Faction
         {
-           
+            get { return faction; }
         }
 
-
-        public override void Position()
+        public override char Symbol
         {
-        }
-            
-
-        public override void Dealth()
-        {
-            
+            get { return symbol; }
         }
 
-        public override string ToString()
+        public override bool IsDestroyed => throw new NotImplementedException();
+
+        public override bool IsInRange(Unit otherUnit)
         {
-            return "Units"+ Faction;
+            return GetDistance(otherUnit) <= attackRange;
+        }
+
+        public override void Destroy()
+        {
+            isDestroyed = true;
+            isAttacking = false;
+            symbol = 'X';
+        }
+
+        public override Unit GetClosestUnit(Unit[] units)
+        {
+            double closestDistance = int.MaxValue;
+            Unit closestUnit = null;
+
+            foreach (Unit otherUnit in units)
+            {
+                if (otherUnit == this || otherUnit.Faction == faction || otherUnit.IsDestroyed)
+                {
+                    continue;
+                }
+
+                double distance = GetDistance(otherUnit);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestUnit = otherUnit;
+                }
+            }
+
+            return closestUnit;
+        }
+
+        public override void Attack(Unit otherUnit)
+        {
+            isAttacking = false;
+            otherUnit.Health -= attack;
+
+            if (otherUnit.Health <= 0)
+            {
+                otherUnit.Destroy();
+            }
+        }
+
+        public override void Move(Unit closestUnit)
+        {
+            isAttacking = false;
+            int xDirection = closestUnit.X - X;
+            int yDirection = closestUnit.Y - Y;
+
+            if (Math.Abs(xDirection) > Math.Abs(yDirection))
+            {
+                x += Math.Sign(xDirection);
+            }
+            else
+            {
+                y += Math.Sign(yDirection);
+            }
+        }
+
+        public override void RunAway()
+        {
+            isAttacking = false;
+            int direction = random.Next(0, 4);
+            if (direction == 0)
+            {
+                x += 1;
+            }
+            else if (direction == 1)
+            {
+                x -= 1;
+            }
+            else if (direction == 2)
+            {
+                y += 1;
+            }
+            else
+            {
+                y -= 1;
+            }
         }
 
     }

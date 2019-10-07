@@ -10,60 +10,53 @@ namespace Alison_Govender_18010831_GADE6112_Project_1
     {
         GameEngineFrm gameEngineFrm = new GameEngineFrm();
 
+        protected int x, y, health, maxHealth, speed, attack, attackRange;
+        protected string faction;
+        protected char symbol;
+        protected bool isAttacking = false;
+        protected bool isDestroyed = false;
+        public static Random random = new Random();
 
-        protected int x;
-        protected int y;
-        protected int Health;
-        protected int maxHealth{ get; }
-        protected int UnitSpeed;
-        protected int attack;
-        protected int AttackRange;
-        protected string Faction;
-        protected string Symbol;
-        bool unitAttack = false;
-
-        public Unit()
+        public Unit(int x, int y, int health, int speed, int attack, int attackRange, string faction, char symbol)
         {
-            maxHealth = 100;
-            attack = 10;
-            AttackRange = 4;
+            this.x = x;
+            this.y = y;
+            this.health = health;
+            maxHealth = health;
+            this.speed = speed;
+            this.attack = attack;
+            this.attackRange = attackRange;
+            this.faction = faction;
+            this.symbol = symbol;
+        }
 
+        public void Name(string FootSoldier, string Tank, string archer, string Knight)
+        {
 
         }
 
-        public Unit(int X, int Y, int hp, int Us, int Attack, int AR, string Fact, string Sym, bool UnitAtck)
-        {
-            X = x;
-            Y = y;
-            Health = hp;
-            UnitSpeed = Us;
-            attack = Attack;
-            AttackRange = AR;
-            Faction = Fact;
-            Symbol = Sym;
-            unitAttack = UnitAtck;
+        public abstract int X { get; set; }
+        public abstract int Y { get; set; }
+        public abstract int Health { get; set; }
+        public abstract int MaxHealth { get; }
+        public abstract string Faction { get; }
+        public abstract char Symbol { get; }
+        public abstract bool IsDestroyed { get; }
 
+        public abstract void Move(Unit closestUnit);
+        public abstract void Attack(Unit otherUnit);
+        public abstract void RunAway();
+        public abstract bool IsInRange(Unit otherUnit);
+        public abstract Unit GetClosestUnit(Unit[] units);
+        public abstract void Destroy();
+
+        protected double GetDistance(Unit otherUnit)
+        {
+            double xDistance = otherUnit.X - X;
+            double yDistance = otherUnit.Y - Y;
+            return Math.Sqrt(xDistance * xDistance + yDistance * yDistance);
         }
 
-        public int X { get; set; }
-
-        public abstract void Move();
-
-        public abstract void Combact();
-
-        public abstract void Attack_Range();
-
-        public abstract void Position();
-
-        public abstract void Dealth();
-
-        public override string ToString()
-        {
-            return "Unit:"+ Faction;
-        }
-        
-
-       
 
 
 

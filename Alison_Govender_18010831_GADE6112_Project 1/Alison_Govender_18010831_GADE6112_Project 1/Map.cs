@@ -6,34 +6,99 @@ using System.Threading.Tasks;
 
 namespace Alison_Govender_18010831_GADE6112_Project_1
 {
-    public partial class Map
+    class Map
     {
+        int mapSize = 20;
+        Random random = new Random();
+        int numUnits;
+        Unit[] units;
+        string[,] map;
+        string[] factions = { "A-Team", "B-Team " };
 
-        const int WIDTH = 20;
-        const int HEIGHT = 20;
-        string[,] map = new string[20, 20];
-        int x = 0;
-        int y = 0;
-        Random rnd = new Random();
-        
-    
-        
-
-        public void InitializeMap()
+        public Map(int numUnits, int numBuildings)
         {
-            x = rnd.Next(0,20);
-            y = rnd.Next(0,20);
+            this.numUnits = numUnits;
+            Reset();
+        }
 
-            for (int cy = 0; cy < map.GetLength(1); cy++)
+        public Unit[] Units
+        {
+            get { return units; }
+        }
+
+        public int Size
+        {
+            get { return mapSize; }
+        }
+
+        public string GetMapDisplay()
+        {
+            string mapString = "";
+            for (int y = 0; y < mapSize; y++)
             {
-                for (int cx = 0; cx < map.GetLength(0); cx++)
+                for (int x = 0; x < mapSize; x++)
                 {
-                    map[cx, cy] = ".";
-
+                    mapString += map[x, y];
                 }
+
+                mapString += "\n";
+            }
+
+            return mapString;
+        }
+
+        public void Reset()
+        {
+            map = new string[mapSize, mapSize];
+            units = new Unit[numUnits];
+            InitializeUnits();
+            UpdateMap();
+        }
+
+        public void UpdateMap()
+        {
+            for (int y = 0; y < mapSize; y++)
+            {
+                for (int x = 0; x < mapSize; x++)
+                {
+                    map[x, y] = " . ";
+                }
+            }
+
+            foreach (Unit unit in units)
+            {
+                map[unit.X, unit.Y] = unit.Faction[0] + "/" + unit.Symbol;
             }
         }
 
+        public void InitializeUnits()
+        {
+            for (int i = 0; i < units.Length; i++)
+            {
+                int x = random.Next(0, mapSize);
+                int y = random.Next(0, mapSize);
+                int factionIndex = random.Next(0, 2);
+                int unitType = random.Next(0, 2);
+
+                while (map[x, y] != null)
+                {
+                    x = random.Next(0, mapSize);
+                    y = random.Next(0, mapSize);
+                }
+
+                if (unitType == 0)
+                {
+                    units[i] = new Melee_Unit(x, y, factions[factionIndex]);
+
+                }
+                else
+                {
+                    units[i] = new Ranged_Unit(x, y, factions[factionIndex]);
+                }
+
+                map[x, y] = units[i].Faction[0] + "/" + units[i].Symbol;
+            }
+        }
 
     }
 }
